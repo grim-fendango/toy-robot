@@ -2,9 +2,13 @@
 
 ## Getting Started
 
-1. git clone https://github.com/grim-fendango/toy-robot
-2. go run toy-robot.go
+1. `git clone https://github.com/grim-fendango/toy-robot`
+2. `make run`
 3. Enter commands :D
+
+## Running tests
+
+Simply run `make test`
 
 ## Description
 
