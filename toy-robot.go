@@ -85,7 +85,7 @@ func reportCmd(rbt *robot.Robot) {
 }
 
 func findCommand(raw string) string {
-  rCommand, _ := regexp.Compile(fmt.Sprintf("^%s|%s|%s|%s|%s", end, move, left, right, place))
+  rCommand, _ := regexp.Compile(fmt.Sprintf("^%s|%s|%s|%s|%s|%s", end, move, left, right, place, report))
   command := rCommand.FindString(raw)
   return command
 }
@@ -107,7 +107,16 @@ func processInput(raw string) (command string, args []string) {
 
 func main() {
   reader := bufio.NewReader(os.Stdin)
-  rbt := robot.New()
+  startingPosition := robot.Position{
+    X: 0,
+    Y: 0,
+    Direction: robot.NORTH,
+  }
+  table := robot.Table{
+      Width: 5,
+      Height: 5,
+    }
+  rbt := robot.New(startingPosition, table)
   fmt.Println("Robot is ready")
   for {
     fmt.Print("Enter Command: ")
