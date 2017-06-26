@@ -1,6 +1,7 @@
 package main
 
 import (
+  "regexp"
   "os"
   "bufio"
   "fmt"
@@ -83,6 +84,27 @@ func reportCmd(rbt *robot.Robot) {
   fmt.Printf("X: %v, Y: %v, Direction: %v\n", position.X, position.Y, position.Direction)
 }
 
+func findCommand(raw string) string {
+  rCommand, _ := regexp.Compile(fmt.Sprintf("^%s|%s|%s|%s|%s", end, move, left, right, place))
+  command := rCommand.FindString(raw)
+  return command
+}
+
+func findArgs(raw string) []string {
+  rArgs, _ := regexp.Compile(fmt.Sprintf(`%s ([0-9]*) ([0-9]*) ([A-Z]*)`, place))
+  args := rArgs.FindAllStringSubmatch(raw, -1)
+  if len(args) == 0 {
+    return []string{}
+  }
+  return args[0][1:]
+}
+
+func processInput(raw string) (command string, args []string) {
+  command = findCommand(raw)
+  args = findArgs(raw)
+  return command, args
+}
+
 func main() {
   reader := bufio.NewReader(os.Stdin)
   rbt := robot.New()
@@ -90,10 +112,12 @@ func main() {
   for {
     fmt.Print("Enter Command: ")
     raw, _ := reader.ReadString('\n')
-    command := raw[:len(raw)-1]
-    args := []string{"1", "1", "NORTH"}
-    fmt.Println(command)
-
+    command, args := processInput(raw)
+    if len(args) > 0 {
+      fmt.Printf("Command: %v Args: %v\n", command, args)
+    } else {
+      fmt.Printf("Command: %v\n", command)
+    }
     var err error
     if command == end {
       break
